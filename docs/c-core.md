@@ -256,7 +256,10 @@ from abugida import distance, alignment, Lexicon
 distance("kamma", "khamma")     # 0.470, computed in C
 ```
 
-`abugida.distance.USING_C` reports which implementation answered. When the
+`USING_C` in the module `abugida.distance` reports which implementation
+answered (`from abugida.distance import USING_C`; the attribute
+`abugida.distance` is the function, which shadows the submodule of the same
+name, so `import abugida.distance as d` binds the function). When the
 extension is absent — a source checkout with no compiler — the pure-Python
 reference in `abugida._pure` answers instead, with the same values, so the
 package degrades to what it was before rather than failing.
@@ -294,7 +297,7 @@ clean virtual environment:
 ```bash
 python -m build --sdist
 pip install dist/abugida-0.1.0.tar.gz      # in a fresh venv
-python -c "import abugida.distance as d; print(d.USING_C)"   # True
+python -c "from abugida.distance import USING_C; print(USING_C)"   # True
 ```
 
 - **The C core builds with no Python in the process**: `make -C csrc check`

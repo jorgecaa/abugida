@@ -202,5 +202,12 @@ for ext in extensions:
     ext.define_macros = list(ext.define_macros or []) + DEFINES
     # libm, for the acos and sqrt of the cost table's calibration.
     ext.libraries = list(ext.libraries) + ["m"]
+    # OPTIONAL, so a machine with no C compiler still installs the package:
+    # setuptools turns a failed compile of an optional extension into a
+    # warning, and `abugida.distance` then answers from the pure-Python
+    # reference with the same values. Without this the README's promise was
+    # false — measured: `CC=/bin/false pip install abugida-*.tar.gz` failed
+    # with "Failed to build installable wheels".
+    ext.optional = True
 
 setup(ext_modules=extensions)

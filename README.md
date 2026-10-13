@@ -134,15 +134,17 @@ guess; the phonological distance almost never ties.
 ## Install
 
 ```bash
-pip install -e .
+pip install -e .        # from the repository root, where pyproject.toml is
 ```
 
 No runtime dependencies: the metric is C, and it compiles into the extension,
 so an installed `abugida` needs neither a shared library nor Cython. Building
-it needs a C compiler and Cython (declared in `pyproject.toml`); without one,
-`abugida.distance` falls back to the pure-Python reference and answers with
-the same values. Declared `requires-python = ">=3.9"`; verified on CPython
-3.11–3.14. `pytest` is needed only to run the test suite (419 tests).
+it needs Cython (declared in `pyproject.toml`, so pip fetches it) and a C
+compiler; without a compiler the install still succeeds, with a warning, and
+the package answers from the pure-Python reference with the same values,
+only slower. `python -c "from abugida.distance import USING_C; print(USING_C)"`
+says which one you got. Declared `requires-python = ">=3.9"`; verified on CPython
+3.11–3.14. `pytest` is needed only to run the test suite (420 tests).
 
 ## The C core
 
