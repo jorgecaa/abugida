@@ -26,7 +26,16 @@ CFLAGS += -std=c99 -Wall -Wextra -Wpedantic -I.
 CFLAGS += -DABUGIDA_USE_MYERS
 LDLIBS ?= -lm
 
+# IMPL=1 builds into its own directory. The flag changes what abugida.c is
+# compiled with and which kernels are linked, but no file make can see, so a
+# shared directory let `make check IMPL=1` after `make check` reuse the
+# three-variant objects and test the dispatching build under the single-variant
+# name (measured: the three variants ran, 2,724 Myers checks instead of 914).
+ifdef IMPL
+BUILD ?= ../build/c-impl1
+else
 BUILD ?= ../build/c
+endif
 LIB = $(BUILD)/libabugida.a
 TEST = $(BUILD)/test_abugida
 EDGE = $(BUILD)/test_edge_cases
@@ -157,4 +166,4 @@ bench: $(BENCH)
 	@for v in `$(BENCH) --list`; do $(BENCH) $$v; done
 
 clean:
-	rm -rf $(BUILD)
+	rm -rf $(BUILD) ../build/c ../build/c-impl1
