@@ -31,7 +31,9 @@ does not get this far, which is the correct failure.
 
 import os
 import re
+import shlex
 import subprocess
+import sysconfig
 import tempfile
 from pathlib import Path
 
@@ -65,6 +67,27 @@ KERNEL_VARIANTS = [
 ]
 
 
+def _target_arch_flags():
+    """The `-arch` flags the extension itself will be compiled with.
+
+    On macOS the python.org interpreters build universal2 extensions —
+    `-arch x86_64 -arch arm64` in one compile — and `ARCHFLAGS` can ask for
+    the same. A probe without them asks about the build machine alone: on an
+    Intel Mac `-march=x86-64-v2` passes the probe, is then applied to the
+    arm64 half too, and the whole compile fails (measured on the CI's
+    macos-15-intel runner, where the package silently fell back to pure
+    Python). Probing with the same `-arch` flags makes that variant fail the
+    probe instead, and the universal build keeps the C kernel alone.
+    """
+    source = os.environ.get("ARCHFLAGS") or sysconfig.get_config_var("CFLAGS") or ""
+    words = shlex.split(source)
+    flags = []
+    for i, word in enumerate(words[:-1]):
+        if word == "-arch":
+            flags += ["-arch", words[i + 1]]
+    return flags
+
+
 def _can_compile(flags):
     """Does this toolchain accept these flags for this target?
 
@@ -76,7 +99,7 @@ def _can_compile(flags):
     """
     with tempfile.TemporaryDirectory() as tmp:
         cc = os.environ.get("CC") or "cc"
-        cmd = cc.split() + (flags or []) + [
+        cmd = cc.split() + _target_arch_flags() + (flags or []) + [
             "-c", str(CSRC / "abugida_myers.c"),
             "-o", os.path.join(tmp, "probe.o"),
             "-I", str(CSRC), "-std=c99",
