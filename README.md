@@ -134,17 +134,34 @@ guess; the phonological distance almost never ties.
 ## Install
 
 ```bash
-pip install -e .        # from the repository root, where pyproject.toml is
+pip install git+https://github.com/jorgecaa/abugida
 ```
 
-No runtime dependencies: the metric is C, and it compiles into the extension,
-so an installed `abugida` needs neither a shared library nor Cython. Building
-it needs Cython (declared in `pyproject.toml`, so pip fetches it) and a C
-compiler; without a compiler the install still succeeds, with a warning, and
-the package answers from the pure-Python reference with the same values,
-only slower. `python -c "from abugida.distance import USING_C; print(USING_C)"`
-says which one you got. Declared `requires-python = ">=3.9"`; verified on CPython
-3.11–3.14. `pytest` is needed only to run the test suite (420 tests).
+That is all: no runtime dependencies, nothing to configure. pip fetches
+Cython for the build and compiles the C core into the package, so the
+installed `abugida` needs neither a shared library nor Cython at run time.
+The only thing it needs from the machine is a C compiler — on Linux the
+system `cc`, on macOS the Xcode command-line tools (`xcode-select
+--install`), on Windows the Microsoft C++ Build Tools. Without one the
+install still succeeds, with a warning, and the package answers from the
+pure-Python reference with the same values, only slower; this says which you
+got:
+
+```bash
+python -c "from abugida.distance import USING_C; print(USING_C)"   # True = C
+```
+
+Requires Python 3.9 or later. `.github/workflows/install.yml` installs it and
+runs the suite on Linux, macOS (Apple silicon and Intel) and Windows, at
+Python 3.9 and 3.13.
+
+To work on it, clone and install in editable mode from the repository root
+(where `pyproject.toml` is), with `pytest` for the 420 tests:
+
+```bash
+git clone https://github.com/jorgecaa/abugida && cd abugida
+pip install -e . pytest && python -m pytest -q
+```
 
 ## The C core
 

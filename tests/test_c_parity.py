@@ -357,7 +357,7 @@ def test_the_documents_figures_still_hold():
     instead of leaving a document quietly wrong."""
     import re
 
-    doc = (ROOT / "docs" / "c-core.md").read_text()
+    doc = (ROOT / "docs" / "c-core.md").read_text(encoding="utf-8")
     assert f"{DOC_FIGURES['tokens']} tokens" in doc, "the doc's token count"
     assert f"{DOC_FIGURES['graphemes']} graphemes" in doc, "the doc's grapheme count"
     assert _c.NTOKENS == DOC_FIGURES["tokens"]
@@ -368,7 +368,7 @@ def test_the_documents_figures_still_hold():
     assert f"{pairs:,}" in doc, f"the doc does not state {pairs:,} pairs"
     # And the generated header agrees with both, so the C consumer sees the
     # same vocabulary the doc describes.
-    header = (ROOT / "csrc" / "abugida_tables.h").read_text()
+    header = (ROOT / "csrc" / "abugida_tables.h").read_text(encoding="utf-8")
     assert re.search(r"#define ABUGIDA_NTOKENS 126\b", header)
     assert re.search(r"#define ABUGIDA_NPLAIN 41\b", header)
 

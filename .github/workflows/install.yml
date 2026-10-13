@@ -1,0 +1,60 @@
+# Does `pip install` give a working package on every platform people use?
+#
+# One job per operating system and per end of the supported Python range.
+# Each installs the package the way a user does, checks that the C core was
+# built (USING_C) and answers with the reference values, then runs the test
+# suite. Linux and macOS also build and run the C core standalone
+# (`make -C csrc check`), which is what a C consumer links.
+#
+# macOS runs twice: macos-latest is Apple silicon (arm64), macos-13 is the
+# last Intel image, and the two take different paths through setup.py's
+# instruction-set probes (no SSE2/AVX2 variants on arm64).
+
+name: install
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  install:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, macos-13, windows-latest]
+        python: ["3.9", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install as a user would (from a built wheel, outside the tree)
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install .
+          cd "$RUNNER_TEMP"
+          python -c "
+          from abugida.distance import USING_C, distance
+          print('USING_C', USING_C)
+          assert USING_C, 'the C core was not built'
+          d = distance('kamma', 'khamma')
+          assert abs(d - 0.4697381280792578) < 1e-12, d
+          print('kamma ~ khamma', d)
+          "
+
+      - name: Test suite (editable build, so the tests see the extension)
+        shell: bash
+        run: |
+          python -m pip install -e . pytest
+          python -c "from abugida.distance import USING_C; assert USING_C"
+          python -m pytest -q
+
+      - name: C core standalone
+        if: runner.os != 'Windows'
+        run: make -C csrc check

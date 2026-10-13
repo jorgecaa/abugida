@@ -694,7 +694,7 @@ def main() -> int:
     outputs = [(OUT_H, header), (OUT_C, source), (OUT_PAIRS, parity_pairs())]
 
     if args.check:
-        stale = [p for p, text in outputs if not p.exists() or p.read_text() != text]
+        stale = [p for p, text in outputs if not p.exists() or p.read_text(encoding="utf-8") != text]
         if stale:
             for p in stale:
                 print(f"{p} is stale: run python tools/generate_c_tables.py")
@@ -703,7 +703,7 @@ def main() -> int:
         return 0
 
     for p, text in outputs:
-        p.write_text(text)
+        p.write_text(text, encoding="utf-8")
         print(f"wrote {p.name} ({len(text)} bytes)")
     return 0
 

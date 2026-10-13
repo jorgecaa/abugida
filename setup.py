@@ -13,12 +13,12 @@ in.
 
 Two details here are load-bearing rather than stylistic:
 
-- **The core files go in `depends`, not in `sources`.** setuptools copies
-  every file listed in `sources` into its build tree before compiling, which
-  would break the `#include "abugida_tables.h"` next to them; `depends` says
-  "rebuild when this changes" without moving anything. The include directory
-  is what lets the compiler find them where they live.
-- **`-std=c99` is passed explicitly.** The core uses declarations after
+- **The include directory is absolute.** The core files are listed in
+  `sources` (that is what makes setuptools compile them) and in `depends`
+  (rebuild tracking); `include_dirs` carries `csrc` absolute so the headers
+  are found from setuptools' build tree and from an sdist built in a
+  temporary directory alike. See the loop below.
+- **`-std=c99` is passed explicitly** to GCC and Clang. The core uses declarations after
   statements, and the default standard on older toolchains is C89. `-O3` is
   deliberately NOT passed: setuptools already passes the interpreter's own
   optimisation flags, and overriding them would make this extension's build
@@ -37,6 +37,7 @@ from pathlib import Path
 
 from Cython.Build import cythonize
 from setuptools import setup
+from setuptools.command.build_ext import build_ext
 
 ROOT = Path(__file__).parent
 CSRC = ROOT / "csrc"
@@ -119,7 +120,7 @@ def _write_variant_sources():
 
     Returns the paths, plus the define that belongs to each.
     """
-    source = (CSRC / "abugida_myers.c").read_text()
+    source = (CSRC / "abugida_myers.c").read_text(encoding="utf-8")
     # The generated file sits in the build tree, so its include of the public
     # header has to be absolute.
     # The generated copy sits in the build tree, so `#include "abugida.h"`
@@ -140,7 +141,7 @@ def _write_variant_sources():
             f" * to the whole extension. */\n"
             f"#define ABUGIDA_MYERS_SUFFIX {suffix}\n"
         )
-        path.write_text(header + body)
+        path.write_text(header + body, encoding="utf-8")
         made.append(path)
     return made
 
@@ -210,4 +211,29 @@ for ext in extensions:
     # with "Failed to build installable wheels".
     ext.optional = True
 
-setup(ext_modules=extensions)
+#: Flags only GCC and Clang understand. MSVC warns on unknown options rather
+#: than failing, but the warnings bury real ones, and `-march` would select
+#: nothing; the C core needs no flag there (MSVC compiles C99 declarations
+#: after statements by default, and `__builtin_cpu_supports` is guarded).
+GCC_ONLY = set(EXTRA_COMPILE_ARGS)
+
+
+class BuildExt(build_ext):
+    """The declarations above are written for GCC and Clang (Linux, macOS);
+    this adapts them to MSVC (Windows), where there is no `libm` to link —
+    the maths is in the C runtime — and none of the flags apply. Decided on
+    the compiler setuptools actually chose, not on the platform name, so a
+    MinGW build on Windows keeps the GCC flags."""
+
+    def build_extensions(self):
+        if self.compiler.compiler_type == "msvc":
+            for ext in self.extensions:
+                ext.extra_compile_args = [
+                    a for a in ext.extra_compile_args
+                    if a not in GCC_ONLY and not a.startswith("-march")
+                ]
+                ext.libraries = [lib for lib in ext.libraries if lib != "m"]
+        super().build_extensions()
+
+
+setup(ext_modules=extensions, cmdclass={"build_ext": BuildExt})
