@@ -280,7 +280,7 @@ Seven checks, each catching something the others cannot:
 
 | check | what it proves |
 |---|---|
-| `tests/test_c_parity.py` | the C core and the Python reference return the **same doubles**: the cost table over all 15,876 ordered token pairs, the tokeniser over every grapheme and grapheme pair, `distance`/`levenshtein`/`alignment` over a fixed-seed corpus, and the two pipeline functions |
+| `tests/test_c_parity.py` | the C core and the Python reference return the **same doubles** (bit for bit on Linux, within 1e-12 where the C library rounds `acos` differently): the cost table over all 15,876 ordered token pairs, the tokeniser over every grapheme and grapheme pair, `distance`/`levenshtein`/`alignment` over a fixed-seed corpus, and the two pipeline functions |
 | `tests/c/test_abugida.c` | the metric is **right**: the published scale as values, the metric axioms over the whole vocabulary, degemination, the epenthetic weights, the sandhi pipeline, and 4,131 pairs the generator wrote from the Python implementation (2,049,213 assertions, **no Python in the process**) |
 | `tests/c/test_edge_cases.c` | the library is **sound**: empty words, NULL arguments, words past the stack threshold, broken UTF-8, alignment invariants, and a **leak check** that runs each operation thousands of times against the allocator's own accounting (8,797 assertions) |
 | `tests/c/test_bounded.c` | the bounded DP agrees with the plain one — every pair at every bound, a pool-shaped sweep, and three wrong versions of the early cut pinned |
@@ -337,8 +337,14 @@ things a value comparison cannot see:
   they raise it is the same exception type. A port that is stricter than its
   reference breaks callers that relied on lenient behaviour; one that is
   looser returns a number where the reference raised.
-- **the range**: same types, same shapes, same doubles. Bit equality for
-  floats, because the C table holds the doubles the generator computed.
+- **the range**: same types, same shapes, same doubles. Bit for bit on the
+  platform the tables are generated on (Linux, glibc): the C table holds the
+  doubles the generator computed there. Elsewhere the C core still returns
+  those same doubles, but the pure-Python reference recomputes each cost with
+  the platform's `acos` and `sqrt`, which macOS and Windows round differently
+  in the last bit (up to 3 ulp, measured on the CI runners), so
+  `tests/test_c_parity.py` and `generate_c_tables.py --check` compare doubles
+  to within 1e-12 — the traceback's tie tolerance.
 
 `tools/differential.py` runs both over 3,878 inputs and ~102,000 comparisons
 and reports zero disagreements. Three real bugs lived in the gap between

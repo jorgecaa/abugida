@@ -1,9 +1,10 @@
-"""The C core and the Python reference must agree — exactly.
+"""The C core and the Python reference must agree.
 
 This is the test that makes a second implementation safe. Every published
 figure in the project was measured with the pure-Python metric; the package
 now computes with the C core, and the two are required to return the same
-doubles, not merely close ones.
+answers: the same tokens, the same operations, the same exceptions, and the
+same doubles to within `TOLERANCE`.
 
 What is compared, and why each is here:
 
@@ -25,15 +26,21 @@ What is compared, and why each is here:
 - **The constants**: INDEL_WEIGHT and ONE_MOVE as the C core holds them
   against the values the reference derives at import time.
 
-Exact comparison is deliberate. A tolerance would hide a real difference, and
-the only legitimate source of difference is floating-point reassociation —
-which does not happen here, because the C table holds the same doubles the
-generator computed (hex-float literals round trip) and the DP accumulates in
-the same order. If a future change makes exact agreement impossible, the
-right answer is to find out why, not to widen the comparison.
+Why a tolerance, and why this one. The C core reads its costs from the
+committed tables, so it returns the same doubles on every platform. The
+reference recomputes each cost at run time with the platform's `acos` and
+`sqrt`, and the C libraries of Linux, macOS and Windows round those
+differently in the last bit: measured on the CI runners, up to 3 ulp
+(0.746063891461822 against 0.7460638914618217 for bh~a on macOS). On the
+platform the tables were generated on (Linux, glibc) the two agree bit for
+bit, on every Python version — `embed.cosine` sums with `math.fsum` so that
+the interpreter's `sum` (compensated since 3.12) cannot move a bit either.
+`TOLERANCE` is the 1e-12 the traceback already uses to compare path costs,
+some four orders of magnitude above the libm noise.
 """
 
 import itertools
+import math
 import random
 import subprocess
 import sys
@@ -89,6 +96,22 @@ if USING_C:  # pragma: no cover - exercised only with the extension built
 #: A fixed seed, the project's convention (CLAUDE.md).
 SEED = 20260801
 
+#: How far a double from the C core may sit from the reference's (see the
+#: module docstring): the traceback's own tie tolerance.
+TOLERANCE = 1e-12
+
+
+def same(x, y):
+    """Equal, with floats compared to within `TOLERANCE` and everything else
+    (tokens, operation names, exception kinds, shapes) compared exactly."""
+    if isinstance(x, float) or isinstance(y, float):
+        return (isinstance(x, (int, float)) and isinstance(y, (int, float))
+                and math.isclose(x, y, rel_tol=TOLERANCE, abs_tol=TOLERANCE))
+    if isinstance(x, (list, tuple)) and isinstance(y, (list, tuple)):
+        return (type(x) is type(y) and len(x) == len(y)
+                and all(same(a, b) for a, b in zip(x, y)))
+    return x == y
+
 #: Attested words covering the whole alphabet, both digraph lengths, the
 #: heavy units, the epenthetic classes and the sandhi pipeline's own
 #: material.
@@ -119,9 +142,10 @@ def corpus():
 # --- the vocabulary and the constants -------------------------------------
 
 def test_generated_tables_are_up_to_date():
-    """`--check` re-runs the generator and compares byte for byte. A cost
-    change in Python that nobody regenerated fails here rather than quietly
-    leaving the C core on the old scale."""
+    """`--check` re-runs the generator and compares the text exactly and the
+    numbers to within its CHECK_TOLERANCE. A cost change in Python that nobody
+    regenerated fails here rather than quietly leaving the C core on the old
+    scale."""
     result = subprocess.run(
         [sys.executable, str(ROOT / "tools" / "generate_c_tables.py"),
          "--check"],
@@ -131,9 +155,9 @@ def test_generated_tables_are_up_to_date():
 
 
 def test_constants_agree():
-    assert _c.INDEL_WEIGHT == _pure.INDEL_WEIGHT
-    assert _c.ONE_MOVE == _pure.ONE_MOVE
-    assert _c.NEUTRAL_MODIFIER_WEIGHT == _pure.NEUTRAL_MODIFIER_WEIGHT
+    assert same(_c.INDEL_WEIGHT, _pure.INDEL_WEIGHT)
+    assert same(_c.ONE_MOVE, _pure.ONE_MOVE)
+    assert same(_c.NEUTRAL_MODIFIER_WEIGHT, _pure.NEUTRAL_MODIFIER_WEIGHT)
     assert ONE_MOVE == _c.ONE_MOVE
 
 
@@ -162,7 +186,7 @@ def test_cost_table_matches_the_reference_exactly():
     directly, and the Sanskrit phonemes."""
     tokens = [_c.text_of(i) for i in range(_c.NTOKENS)]
     for a, b in itertools.product(tokens, repeat=2):
-        assert _c.cost(a, b) == _pure.cost(a, b), (a, b)
+        assert same(_c.cost(a, b), _pure.cost(a, b)), (a, b)
 
 
 def test_the_three_out_of_inventory_classes_price_alike():
@@ -174,13 +198,13 @@ def test_the_three_out_of_inventory_classes_price_alike():
         ("ṭṭ", "ṭ"), ("tth", "th"), ("kk", "k"), ("bhbh", "bh"),
     ]
     for a, b in pairs:
-        assert _c.cost(a, b) == _pure.cost(a, b), (a, b)
+        assert same(_c.cost(a, b), _pure.cost(a, b)), (a, b)
 
 
 def test_indel_weights_match():
     tokens = [_c.text_of(i) for i in range(_c.NTOKENS)]
     for token in tokens:
-        assert _c.indel(token) == _pure._indel(token), token
+        assert same(_c.indel(token), _pure._indel(token)), token
 
 
 # --- the tokeniser --------------------------------------------------------
@@ -294,8 +318,8 @@ def test_distance_matches_exactly():
     pairs = [(rng.choice(words), rng.choice(words)) for _ in range(1500)]
     pairs += list(itertools.combinations(WORDS, 2))
     for a, b in pairs:
-        assert _c.distance(a, b) == _pure.distance(a, b), (a, b)
-        assert _c.levenshtein(a, b) == _pure.levenshtein(a, b), (a, b)
+        assert same(_c.distance(a, b), _pure.distance(a, b)), (a, b)
+        assert same(_c.levenshtein(a, b), _pure.levenshtein(a, b)), (a, b)
 
 
 def test_distance_matches_over_the_geminate_vocabulary():
@@ -303,19 +327,19 @@ def test_distance_matches_over_the_geminate_vocabulary():
     DP and the easiest to get subtly wrong, so it is exercised directly:
     every geminate against its own grapheme and against another."""
     for long_form, base in sorted(_pure._GEMINATE_BASES.items()):
-        assert _c.cost(long_form, base) == _pure.cost(long_form, base)
+        assert same(_c.cost(long_form, base), _pure.cost(long_form, base))
         assert _c.distance(long_form, long_form) == 0.0
     for a, b in [("attha", "atha"), ("magga", "makka"), ("kamma", "kama"),
                  ("vikkhambhati", "vikhambhati"), ("citta", "cinta"),
                  ("puñña", "puñja"), ("aṭṭha", "aṭha")]:
-        assert _c.distance(a, b) == _pure.distance(a, b), (a, b)
+        assert same(_c.distance(a, b), _pure.distance(a, b)), (a, b)
 
 
 def test_lenient_distance_matches_exactly():
     for a, b in [("qamma", "kamma"), ("kṛṣṇa", "kanna"),
                  ("axta", "atta"), ("śānti", "santi")]:
-        assert _c.distance(a, b, True) == _pure.distance(a, b, True), (a, b)
-        assert _c.levenshtein(a, b, True) == _pure.levenshtein(a, b, True), (a, b)
+        assert same(_c.distance(a, b, True), _pure.distance(a, b, True)), (a, b)
+        assert same(_c.levenshtein(a, b, True), _pure.levenshtein(a, b, True)), (a, b)
 
 
 def test_alignment_matches_operation_for_operation():
@@ -326,14 +350,14 @@ def test_alignment_matches_operation_for_operation():
     words = corpus()
     for _ in range(500):
         a, b = rng.choice(words), rng.choice(words)
-        assert _c.alignment(a, b) == _pure.alignment(a, b), (a, b)
+        assert same(_c.alignment(a, b), _pure.alignment(a, b)), (a, b)
     for a, b in itertools.combinations(WORDS[:20], 2):
-        assert _c.alignment(a, b) == _pure.alignment(a, b), (a, b)
+        assert same(_c.alignment(a, b), _pure.alignment(a, b)), (a, b)
 
 
 def test_alignment_of_lenient_words_reports_the_character():
     for a, b in [("qamma", "kamma"), ("kṛṣṇa", "kanna")]:
-        assert _c.alignment(a, b, True) == _pure.alignment(a, b, True), (a, b)
+        assert same(_c.alignment(a, b, True), _pure.alignment(a, b, True)), (a, b)
 
 
 def test_the_public_functions_are_the_c_ones():
@@ -493,8 +517,8 @@ def test_the_two_implementations_return_the_same_values():
     """The RANGE: same type, same shape, and the same double — over the same
     inputs, including the ones that only differ by case or by encoding.
 
-    Bit equality for floats, not `approx`: the C table holds the doubles the
-    generator computed, so anything less would let a real difference hide."""
+    Doubles to within `TOLERANCE` (module docstring): bit for bit on the
+    platform that generated the tables, within libm rounding elsewhere."""
     def outcome(f, args):
         try:
             return ("ok", call_with(f, args))
@@ -521,7 +545,8 @@ def test_the_two_implementations_return_the_same_values():
                            ("cost", _pure.cost, PUB.cost)]:
         for a in MIRROR_INPUTS:
             for b in MIRROR_INPUTS:
-                assert outcome(ref, (a, b)) == outcome(pub, (a, b)), (name, a, b)
+                assert same(outcome(ref, (a, b)), outcome(pub, (a, b))), \
+                    (name, a, b)
 
 
 def test_an_opaque_token_is_one_character_not_one_byte():

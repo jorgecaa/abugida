@@ -15,12 +15,17 @@ nothing in it is a fresh decision. The numbers are computed here or nowhere:
 The generator exists because the project's discipline forbids a second
 hand-written copy of a derived constant: a C table typed out by hand is a
 tuning waiting to diverge. `tests/test_c_parity.py` re-runs this generator
-and fails if the committed file differs by a byte, so the C core cannot
-silently drift from the Python definitions.
+with `--check`, so the C core cannot silently drift from the Python
+definitions.
 
-Floating-point literals are emitted as C99 hex floats (`%a`), which round
-trip exactly: the C core and the Python package see the same doubles, not
-the same values rounded to the nearest decimal.
+Floating-point literals are emitted with Python's `repr`, the shortest
+decimal that round-trips exactly: the C core reads the very doubles the
+generator computed. Those doubles come from the platform's `acos` and
+`sqrt`, which C libraries round differently in the last bit, so `--check`
+requires the text to match exactly and every number to match within
+`CHECK_TOLERANCE`; a change to the metric fails it, a regeneration on
+another C library does not. The committed tables are generated on Linux
+(glibc).
 
     python tools/generate_c_tables.py            # write the file
     python tools/generate_c_tables.py --check    # fail if it is stale
@@ -29,6 +34,8 @@ the same values rounded to the nearest decimal.
 from __future__ import annotations
 
 import argparse
+import math
+import re
 import sys
 from pathlib import Path
 from typing import List, NamedTuple
@@ -682,6 +689,29 @@ def parity_pairs() -> str:
     return "\n".join(lines)
 
 
+#: How far a regenerated number may sit from the committed one under
+#: `--check`: the 1e-12 the traceback uses for ties, some four orders of
+#: magnitude above the last-bit differences between C libraries.
+CHECK_TOLERANCE = 1e-12
+
+_NUMBER = re.compile(r"(-?\d+\.\d+(?:[eE][-+]?\d+)?)")
+
+
+def _matches(committed: str, regenerated: str) -> bool:
+    """The same text, with every decimal number within CHECK_TOLERANCE."""
+    a, b = _NUMBER.split(committed), _NUMBER.split(regenerated)
+    if len(a) != len(b):
+        return False
+    for i, (x, y) in enumerate(zip(a, b)):
+        if i % 2 == 0:
+            if x != y:
+                return False
+        elif not math.isclose(float(x), float(y), rel_tol=CHECK_TOLERANCE,
+                              abs_tol=CHECK_TOLERANCE):
+            return False
+    return True
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--check", action="store_true",
@@ -694,7 +724,8 @@ def main() -> int:
     outputs = [(OUT_H, header), (OUT_C, source), (OUT_PAIRS, parity_pairs())]
 
     if args.check:
-        stale = [p for p, text in outputs if not p.exists() or p.read_text(encoding="utf-8") != text]
+        stale = [p for p, text in outputs if not p.exists()
+                 or not _matches(p.read_text(encoding="utf-8"), text)]
         if stale:
             for p in stale:
                 print(f"{p} is stale: run python tools/generate_c_tables.py")

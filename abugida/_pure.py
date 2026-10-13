@@ -504,7 +504,7 @@ def _l1(g1: str, g2: str, weights: List[float]) -> float:
     v1, v2 = _vector(g1), _vector(g2)
     if v1 is None or v2 is None:
         return float("inf")
-    return sum(abs(a - b) * w for a, b, w in zip(v1, v2, weights))
+    return math.fsum(abs(a - b) * w for a, b, w in zip(v1, v2, weights))
 
 
 def _balanced_l1_weight() -> float:

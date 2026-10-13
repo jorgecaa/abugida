@@ -6,8 +6,8 @@
 # suite. Linux and macOS also build and run the C core standalone
 # (`make -C csrc check`), which is what a C consumer links.
 #
-# macOS runs twice: macos-latest is Apple silicon (arm64), macos-13 is the
-# last Intel image, and the two take different paths through setup.py's
+# macOS runs twice: macos-latest is Apple silicon (arm64), macos-15-intel is
+# the Intel image, and the two take different paths through setup.py's
 # instruction-set probes (no SSE2/AVX2 variants on arm64).
 
 name: install
@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, macos-13, windows-latest]
+        os: [ubuntu-latest, macos-latest, macos-15-intel, windows-latest]
         python: ["3.9", "3.13"]
     steps:
       - uses: actions/checkout@v4

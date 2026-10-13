@@ -365,7 +365,7 @@ What is already established, so nobody re-measures it:
 - **The substitution cost is a metric**, exhaustively — the failure is in the
   transitions, not the geometry.
 - **It is not a C artefact.** The pure-Python reference returns the same
-  numbers; `tests/test_c_parity.py` holds the two to bit-for-bit agreement.
+  numbers; `tests/test_c_parity.py` holds the two together.
 - **The geminate transitions are worth +15.1 recall points**
   (`eval/ablate_geminates.py`), so removing them to restore the theorem is
   not a trade worth proposing again.

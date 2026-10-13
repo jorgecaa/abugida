@@ -177,10 +177,13 @@ def describe(value) -> str:
 def same(a, b) -> bool:
     """Structural equality, with floats compared by BITS.
 
-    Bit equality, not approximate: the two implementations are required to
-    return the same double, and the generator emits hex-float literals so that
-    they can. `==` would pass on two NaNs and on +0.0 against -0.0, so the
-    sign and the exact payload are checked too.
+    Bit equality, not approximate: on the platform the tables are generated
+    on (Linux, glibc) the two implementations return the same double, because
+    the generator emits round-tripping literals. On a C library that rounds
+    `acos` differently the reference moves in the last bit and this tool will
+    say so; `tests/test_c_parity.py` is the cross-platform check. `==` would
+    pass on two NaNs and on +0.0 against -0.0, so the sign and the exact
+    payload are checked too.
     """
     ka, va = a[0], a[1:]
     kb, vb = b[0], b[1:]

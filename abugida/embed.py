@@ -233,9 +233,14 @@ def cosine(
     if modifier_weight != 1.0:
         u = _weighted(u, modifier_weight)
         w = _weighted(w, modifier_weight)
-    dot = sum(a * b for a, b in zip(u, w))
-    nu = math.sqrt(sum(a * a for a in u))
-    nw = math.sqrt(sum(b * b for b in w))
+    # `math.fsum`, not `sum`: the sum is correctly rounded on every Python.
+    # `sum` of floats became compensated in Python 3.12, so the same vectors
+    # gave a cosine one bit apart on 3.9 and on 3.13 — and the C tables are
+    # generated from this function, so the reference must not depend on the
+    # interpreter that runs it.
+    dot = math.fsum(a * b for a, b in zip(u, w))
+    nu = math.sqrt(math.fsum(a * a for a in u))
+    nw = math.sqrt(math.fsum(b * b for b in w))
     if nu == 0.0 or nw == 0.0:
         return 0.0
     return dot / (nu * nw)
