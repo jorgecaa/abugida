@@ -1,0 +1,34 @@
+[project]
+name = "abugida"
+version = "0.1.0"
+description = "Phonological metric for Pali words (IAST): a calibrated distance with an algebraic foundation"
+requires-python = ">=3.9"
+dependencies = []
+license = {file = "LICENSE"}
+readme = "README.md"
+classifiers = [
+    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: C",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+[project.optional-dependencies]
+# rapidfuzz is an optional prefilter for `Lexicon.search`; every use is
+# behind an import guard with a pure-Python fallback.
+speed = ["rapidfuzz"]
+
+[build-system]
+# Cython and setuptools build the extension from `abugida/_cabugida.pyx` and
+# `csrc/`. The runtime dependency list stays EMPTY: the metric compiles into
+# the extension, so an installed abugida needs neither Cython nor a shared
+# library at run time. Without a compiler, `abugida.distance` falls back to
+# the pure-Python reference and behaves identically.
+requires = ["setuptools>=61", "Cython>=3.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["abugida*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

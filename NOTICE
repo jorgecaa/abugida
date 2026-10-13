@@ -1,0 +1,29 @@
+abugida — notice on what the dedication covers
+
+The code and the documentation of this repository are dedicated to the
+public domain under CC0 1.0 Universal (see LICENSE). The dedication covers
+them and nothing else.
+
+Some evaluation scripts in eval/ read case files extracted from works that
+are not this project's to license:
+
+  - Thomas Oberlies, "Pali: A Grammar of the Language of the Theravada
+    Tipitaka" (De Gruyter) — word pairs read from its phonology chapter
+    (eval/oberlies.py, eval/oberlies_attested.py, eval/validation/);
+  - Wilhelm Geiger, "A Pali Grammar", tr. B. Ghosh, rev. K. R. Norman
+    (Pali Text Society) — word pairs harvested from an OCR of it
+    (eval/geiger.py);
+  - the Digital Pali Dictionary (https://github.com/digitalpalidictionary/dpd-db),
+    under its own licence — variant pairs from dpd_headwords.var_phonetic
+    (eval/hard_battery.py) and the lexicon several scripts query.
+
+None of these files, and none of the books, is in this repository or in any
+distribution of the package. Each user keeps a local copy in eval/data/
+(ignored by git) or in the directory named by ABUGIDA_EVAL_DATA, made from
+their own copy of the source where a script can make it (--harvest). A
+script whose case file is missing says so and exits without error.
+
+References to sections of those grammars (e.g. "Oberlies §15.1") and the
+individual Pali and Sanskrit word forms cited as examples in the code and
+documentation are citations of facts about the language, not reproductions
+of the works.

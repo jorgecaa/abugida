@@ -1,0 +1,49 @@
+# What a source distribution must carry beyond the Python package.
+#
+# setuptools includes the package's own `.py` files and whatever `setup.py`
+# names as sources, and nothing else — so without this file an sdist ships
+# `_cabugida.pyx` and no C core, and `pip install abugida-0.1.0.tar.gz` fails
+# to compile.
+
+# The C core, and the makefile a C consumer builds it with.
+include csrc/abugida.c
+include csrc/abugida.h
+include csrc/abugida_myers.c
+include csrc/abugida_tables.c
+include csrc/abugida_tables.h
+include csrc/Makefile
+
+# The binding's Cython source. The generated `_cabugida.c` is deliberately NOT
+# shipped: the build requires Cython (pyproject.toml), so it is always
+# regenerated, and shipping it would only add a file that can go stale. The
+# generated C TABLES are the opposite case and are included above — they need
+# an importable Python package to regenerate, and the C core must build
+# without one. setuptools adds the generated file anyway, because it is listed
+# as an extension source; the exclude below is what keeps the promise.
+include abugida/_cabugida.pyx
+exclude abugida/_cabugida.c
+
+# The generator that produced the tables, and the fixture the C suite scores
+# itself against. Both are provenance: without them the committed tables are
+# a binary blob nobody can re-derive or check.
+include tools/generate_c_tables.py
+include tests/c/pairs.txt
+
+# The four C suites (`make -C csrc check`) and the C-side benchmark. They are
+# what proves the core stands on its own with no Python in the process.
+include tests/c/test_abugida.c
+include tests/c/test_edge_cases.c
+include tests/c/test_myers.c
+include tests/c/test_bounded.c
+include tests/c/bench_impl.c
+
+# The measurements the published speed and parity claims point at.
+include tools/benchmark.py
+include tools/benchmark_lexicon.py
+include tools/differential.py
+
+# The documents the package's claims refer to.
+include LICENSE
+include NOTICE
+include README.md
+include docs/*.md

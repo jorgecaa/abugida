@@ -1,0 +1,54 @@
+# Byte-compiled
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Packaging artefacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Test and tooling caches
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Editors, OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Cython build artefacts
+#
+# `abugida/_cabugida.c` is GENERATED from `_cabugida.pyx` by cythonize and is
+# not committed: the build system depends on Cython (pyproject.toml), so it is
+# always regenerated, and a committed copy is one more file that can fall out
+# of step with its source. The generated C TABLES are the opposite case and
+# ARE committed (`csrc/abugida_tables.[ch]`): they need the Python package
+# importable to regenerate, and the C core must build without it — the
+# staleness check in tests/test_c_parity.py is what keeps them honest.
+abugida/_cabugida.c
+*.so
+*.pyd
+
+# `setup.py` generates one source per kernel variant in `build/csrc_variants/`
+# (same source, different symbol suffix), because setuptools de-duplicates
+# `sources` and has no per-source compile flags. `build/` above already covers
+# it; this note is here because a reader looking for the variants will not
+# find them in the tree, and should not go looking for a missing file.
+
+# Third-party case files for the evaluation scripts (eval/_data.py, NOTICE).
+# They are extractions from copyrighted grammars and from DPD, kept locally
+# and never committed; only the README that says so is tracked.
+eval/data/*
+!eval/data/README.md
