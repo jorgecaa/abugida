@@ -37,7 +37,7 @@ subtree whose stored distance falls outside [d(q,n) − r, d(q,n) + r] cannot
 hold a match and is skipped unvisited. This is the first thing in the package
 to actually USE the metric guarantee that `distance` carries.
 
-THE BOUND IS NOW A THEOREM. Since the heavy units (SPEC §14) every word has
+THE BOUND IS NOW A THEOREM. Since the heavy units (SPEC §9.4) every word has
 one segmentation and `distance` is a true metric, so the pruning interval
 above is sound and `within` is exact by proof. It was not always so: the
 alignment transitions the units replaced broke the word-level inequality

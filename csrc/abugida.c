@@ -457,7 +457,7 @@ static abugida_token unit_token(abugida_token first, abugida_token second)
 /* THE SEGMENTATION: a word's one reading as heavy units, left to right, as
  * Python's `_segment` does it. `out` must hold `n` tokens; the count written
  * is returned. Greedy is not a choice among readings: two candidate units
- * never overlap in a word the inventory can spell (SPEC §13). */
+ * never overlap in a word the inventory can spell (SPEC §8). */
 static size_t segment_units(const abugida_token *seq, size_t n,
                             abugida_token *out)
 {
@@ -1833,7 +1833,7 @@ nomem:
  * same join before a front vowel, and it is the causative absolutive that
  * makes it productive: bhāvayitvā ~ bhāvetvā. Only these three: the
  * long-vowel variants earn nothing on their own and the i-series loses
- * ground, measured rather than assumed (SPEC §9.1).
+ * ground, measured rather than assumed (SPEC §6.3).
  *
  * A NORMALISATION, deliberately not an edit operation: as a 3:1 alignment
  * transition inside `distance` it breaks the triangle inequality, because

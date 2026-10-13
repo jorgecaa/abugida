@@ -90,7 +90,7 @@ CASES = [
      "inflection vs a different consonant"),
 ]
 
-#: The one case the comparator is documented to get wrong (SPEC §14): the
+#: The one case the comparator is documented to get wrong (SPEC §11): the
 #: glut inflates ṃ's norm, so the real orthographic variant saṃgha lands
 #: further away than the ill-formed saṇgha. Kept in the battery rather than
 #: quietly dropped — with its remedy tested below.

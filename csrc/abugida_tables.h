@@ -193,7 +193,7 @@ extern const unsigned char abugida_ts_two_span[10];
  * tokenisation still refuses them. They are here because lenient comparison
  * prices them with real phonology rather than as opaque cost-1 characters —
  * ṣ↔s is 0.460, ś↔s 0.667 — which is what makes cross-system Sanskrit↔Pāli
- * work possible at all (SPEC §14). */
+ * work possible at all (SPEC §9.6). */
 #define ABUGIDA_NFOREIGN 3
 extern const unsigned short abugida_ts_foreign_cp[3];
 extern const abugida_token_t abugida_ts_foreign_id[3];

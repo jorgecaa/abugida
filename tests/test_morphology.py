@@ -204,7 +204,7 @@ def test_the_criterion_prunes_the_phonotactic_generator():
     permissive, since the single-grapheme case endings -e, -o and -ā are
     satisfied by any vowel-final word; requiring an ending of two or more
     graphemes is the discriminating version. Both are reported in SPEC
-    §13.1; this test pins the order of magnitude so the claim cannot drift.
+    §8.1; this test pins the order of magnitude so the claim cannot drift.
     """
     rng = random.Random(20260801)
     words = [pseudoword(rng) for _ in range(2000)]

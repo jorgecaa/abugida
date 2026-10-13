@@ -278,7 +278,7 @@ cases in 314,432 triples). Use it to cut candidates, never to index them.
 `ONE_MOVE` is derived structurally — the costliest elementary move — which
 says what it *is* without saying what it *buys*. `abugida.channel` answers
 that in the currency you care about, by fitting the noisy-channel model the
-metric already assumes (SPEC §14): `P(true variant | d) = exp(−(c + λd))`.
+metric already assumes (SPEC §9): `P(true variant | d) = exp(−(c + λd))`.
 
 ```python
 from abugida import Lexicon, fit_channel
@@ -407,7 +407,7 @@ by the pipeline; resolution is what lets you spend it cheaply.
 ## Which one should I use?
 
 Ground-truth evaluation against the full DPD lexicon
-(`eval/compare_levenshtein.py`, details in `SPEC.md §14`):
+(`eval/compare_levenshtein.py`, details in `SPEC.md §11`):
 
 | task (expected top-1) | phonological | levenshtein |
 |---|---|---|
@@ -631,7 +631,7 @@ Supporting helpers, all usable on their own: `tokenize`, `normalize`,
 
 ### Generating candidates
 
-Two criteria, in increasing strength (SPEC §13 and §13.1):
+Two criteria, in increasing strength (SPEC §8 and §13.1):
 
 | function | question it answers |
 |---|---|
@@ -674,7 +674,7 @@ triples are harvested from `var_phonetic` pairs. The comparison holds only while
 is computed independently of this library. The `recall=` parameter keeps its
 name, which is API.
 
-## Known limitations (SPEC §14)
+## Known limitations (SPEC §9.7)
 
 - Place adjacency is limited to the two karaṇa bridges: t↔ṭ (shared tongue
   tip) and k↔c (shared tongue body) are cheaper than k↔p, but the eight
@@ -695,7 +695,7 @@ name, which is API.
   5,002 `var_phonetic` pairs, this lifts agreement with DPD from 63.6% to
   72.0% at θ=0.627 and from 80.0% to 88.2% at θ=1.0, for +2.8% candidate
   volume. It stays a normalisation on purpose: as an alignment transition
-  inside `distance` it breaks the triangle inequality (SPEC §9.1).
+  inside `distance` it breaks the triangle inequality (SPEC §6.3).
 
 - A weighted metric buys discrimination at a known price: when the TRUE
   error is an expensive edit (an arbitrary consonant dropped or added,
@@ -722,5 +722,5 @@ embeddings whose geometry faithfully represents the project's phonological
 algebra of Pāli: sounds close in the metric are those separated by few moves
 of aspiration/voicing/nasalisation, with the weight between axes **derived**
 — not hand-tuned — from the principle that elementary moves should cost the
-same. Full theory in `SPEC.md` (§1 the algebra, §4 the embedding, §14 the
-distance).
+same. Full theory in `SPEC.md` (§1 the algebra, §4 the embedding, §9 the
+distance, §11 the evaluation).

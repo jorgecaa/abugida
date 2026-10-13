@@ -1,6 +1,6 @@
 """How much of the real lexicon `is_possible` accepts, and what it rejects.
 
-SPEC §13 quotes a calibration against DPD (98.93% of 74,438 cleaned lemmas
+SPEC §8 quotes a calibration against DPD (98.93% of 74,438 cleaned lemmas
 accepted; of the lemmas with a valid ending, 99.82%) that had no script
 behind it. This is that measurement, so it can be re-run when the
 phonotactics change — as they did on 2026-10-13, when the aspirated nasals

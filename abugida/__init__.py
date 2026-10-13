@@ -54,7 +54,7 @@ from .morphology import (
 # Integration adapter: search + variant generation over a word list
 from .lexicon import ONE_MOVE, Lexicon, edit_tag, phonological_form
 
-# Calibration: read a threshold as an expected precision (SPEC §14)
+# Calibration: read a threshold as an expected precision (SPEC §9.2)
 from .channel import Channel, Strata, fit_channel, fit_strata
 
 # Presenting results: Pāli alphabetical order
@@ -63,7 +63,7 @@ from .alphabet import ALPHABET, sort_key, sort_words
 # Supporting layers (the foundation of the cost)
 from .algebra import A, compose, mult
 
-# Experimental, not part of the model: the counterfactuals of SPEC §1.5 —
+# Experimental, not part of the model: the counterfactuals of SPEC §1.1 —
 # the XOR variant (a ring, Z/6Z) and the boolean reading (De Morgan, not
 # boolean, so its derived sum is not XOR).
 from .algebra import (

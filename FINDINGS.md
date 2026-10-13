@@ -75,7 +75,7 @@ not accuracy".
 | **Multi-grapheme alternations** (`ty↔cc`, `dy↔jj`, `ny↔ññ`, `ṇṭ↔nd`) | Closed — expensive but vanishingly rare | Across the 5,002 `var_phonetic` pairs `ty↔cc` occurs once, the other three zero times. `ṃy↔ññ` is already in `assimilate_word`, `e↔aya`/`o↔ava` in `contract_word` |
 | **`contract_word`'s "unverified spurious share"** | Closed — it is ~0 | Of 533 collapsed lemma pairs, 444 (83%) are annotated variants and the remaining 89 are plainly genuine (`avacarati ~ ocarati`) |
 | **`root_key` / `family_root` as a filter** | Rejected | 41.2% coverage; would kill 15.6% of real variants |
-| **Contraction as a 3:1 alignment transition** | Rejected | Breaks the triangle inequality (SPEC §9.1) |
+| **Contraction as a 3:1 alignment transition** | Rejected | Breaks the triangle inequality (SPEC §6.3) |
 | **A transducer of Sanskrit→Pāli sound laws** | Out of scope (decided 2026-10-13) | It encodes history — how Sanskrit became Pāli — which is historical grammar, not distance between sounds. The metric measures sounds; correlated sound-law edits stay priced as the independent edits they look like |
 | **Morphological formability as a filter** | Rejected | 3,920 forms, 0.13% of the lexicon — three orders of magnitude short |
 

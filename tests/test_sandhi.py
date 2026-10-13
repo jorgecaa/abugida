@@ -171,7 +171,7 @@ def test_ayi_contraction_reaches_the_causative_absolutive():
     """`ayi` → `e` is the same lattice join as `aya` → `e`, before a front
     vowel, and the causative absolutive is what makes it productive. Found by
     a dpd-db integration benchmark: these sat at d=1.65, which no threshold
-    reaches. Measured at +0.86 recall points for ~0 volume (SPEC §9.1)."""
+    reaches. Measured at +0.86 recall points for ~0 volume (SPEC §6.3)."""
     from abugida import contract_word, distance
     from abugida.sandhi import CONTRACTIONS
 

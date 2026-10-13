@@ -109,7 +109,7 @@ def test_st_opens_no_word(word):
 
 def test_unassimilated_niggahita_is_legal():
     """ṃ + stop is valid manuscript orthography (saṃgha ~ saṅgha coexist,
-    SPEC §9): the phonotactics accept both spellings."""
+    SPEC §6): the phonotactics accept both spellings."""
     assert is_possible("saṃtāna") and is_possible("santāna")
     assert is_possible("saṃgha") and is_possible("saṅgha")
 

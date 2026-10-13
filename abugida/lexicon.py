@@ -129,7 +129,7 @@ def phonological_form(word: str) -> str:
 
     `assimilate_word` rewrites saṃgha → saṅgha, so the niggahīta stops being
     compared as the overdetermined object it is; `contract_word` applies the
-    two contraction rules that pay (`aya`→`e`, `ava`→`o`, SPEC §9.1). Both
+    two contraction rules that pay (`aya`→`e`, `ava`→`o`, SPEC §6.3). Both
     are NORMALISATIONS, not edit operations, and deliberately so — as
     alignment transitions they break the triangle inequality.
 
@@ -376,7 +376,7 @@ class Lexicon:
 
         `relative=True` compares `distance / max(token length)` against
         `theta` instead of the raw distance, so the budget scales with the
-        word. The noisy-channel reading motivates it (SPEC §14): if each
+        word. The noisy-channel reading motivates it (SPEC §9.2): if each
         position can be corrupted independently, the negative log-likelihood
         of a whole word grows with its length, so a fixed budget is
         progressively stricter on long words. Pāli, being a language of long

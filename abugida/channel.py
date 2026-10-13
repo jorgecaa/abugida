@@ -8,7 +8,7 @@ about: expected precision.
 
 THE MODEL, AND WHY IT IS THE RIGHT ONE. `distance` is a noisy channel: a word
 is corrupted by independent operations, the cost of one is −log P(operation),
-and a path's cost is the corruption's negative log-likelihood (SPEC §14).
+and a path's cost is the corruption's negative log-likelihood (SPEC §9.2).
 That reading implies confusability decays exponentially in the distance,
 
     P(true variant | d)  =  exp(−(c + λd))
@@ -183,7 +183,7 @@ class Strata:
     [distance, signal₁, signal₂] would also work and would be the obvious
     move. It is declined for two reasons: it introduces a second model with
     its own assumptions into a package whose whole discipline is that one
-    principle explains the cost (§14), and it produces coefficients nobody
+    principle explains the cost (SPEC §9.2), and it produces coefficients nobody
     can check by eye. Stratifying keeps the noisy-channel reading intact —
     each stratum is the same exponential decay, fitted separately — and each
     fit remains inspectable, with its own λ, c and R².

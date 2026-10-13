@@ -16,9 +16,9 @@ arrangement. The Python API is unchanged by it.
 Nine documents carry the project's intent, and they are authoritative:
 
 - `SPEC.md` — the theory: the algebra (§1), the embedding (§4), the
-  distance (§14). Sections marked *retired code* describe exploratory work
-  removed from the live package; their ideas survive inside `assimilate`
-  and the phonotactics.
+  distance (§9), the evaluation (§11). It describes what the library is,
+  not how it got there; the record of decisions is in `TODO.md` and
+  `FINDINGS.md`.
 - `docs/comparator.md` — the integration guide and the public API contract,
   including the published cost table.
 - `docs/c-core.md` — the C core: how to link it from C, how the generated
@@ -145,7 +145,7 @@ the files from history, so no commit hash older than it resolves.
 | `protocol.py` | DPD db + rapidfuzz. **The evaluation protocol.** Use it for any "is this better?" question: paired bootstrap + McNemar, not overlapping intervals; agreement against volume, never against θ |
 | `oberlies.py` | case files only (`oberlies_cases.json`, `geiger_cases.json`, `hard_battery.json`, all local data); no DPD. The metric against Oberlies' grammar, an independent reference, and both against DPD's variant pairs; findings in `TODO.md` |
 | `oberlies_attested.py` | DPD db (as information only). Which Sanskrit-side forms of the Oberlies pairs Pāli also attests (western `samāja` beside eastern `samajja`); writes the local `oberlies_attested.json`, which `oberlies.py` then measures as a second set of Pāli doublets |
-| `phonotactics_calibration.py` | DPD db. How much of the real lexicon `is_possible` accepts and why the rest is rejected; reproduces the calibration quoted in SPEC §13 |
+| `phonotactics_calibration.py` | DPD db. How much of the real lexicon `is_possible` accepts and why the rest is rejected; reproduces the calibration quoted in SPEC §8 |
 | `triangle_geminates.py` | case files only; no DPD. Why the word-level triangle failed before the heavy units (one cause: per-pair geminate segmentation) and what each repair costs, the adopted one (halves) included; ~6 s |
 | `hard_battery.py` | case file only (`--harvest` needs DPD). 3,000 triples where Levenshtein ties by construction; the metric scores 50.9% [49.1, 52.7] raw and 68.1% through the pipeline, so unlike `tests/test_battery.py` it has headroom |
 
@@ -230,7 +230,7 @@ rapidfuzz and its docstring says why, so do not promote it.
 
 `channel.py` is a peer of the stack that imports nothing from it: pure
 arithmetic over `(distance, is_variant)` observations, reading a threshold
-as an expected precision under the noisy-channel model of SPEC §14
+as an expected precision under the noisy-channel model of SPEC §9.2
 (`fit_channel`; `fit_strata` for per-stratum fits, which abstain to the
 pooled channel when a stratum is too small and use the stratum's own flat
 rate when it is large but nearly all negative). It ships **no** constants:
@@ -286,7 +286,7 @@ normalisation applied *before* measuring, not an edit operation. Moving it
 into `distance` as a 3:1 alignment transition looks like a natural
 extension of the DP and **breaks the triangle inequality**, for the same
 reason the old geminate 2:1 transitions did (see below) — it was implemented, measured and reverted; the
-counterexample and the reasoning are in SPEC §9.1. Monotone alignments are
+counterexample and the reasoning are in SPEC §6.3. Monotone alignments are
 not closed under path composition once a transition consumes three tokens
 on one side. If you are tempted to unify the two mechanisms, read that
 section first.

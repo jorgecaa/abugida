@@ -1,6 +1,6 @@
 """Word-level sandhi: the niggahīta, and vowel junction.
 
-See SPEC.md §9. The glut of ṃ is resolved against what follows, within the
+See SPEC.md §6. The glut of ṃ is resolved against what follows, within the
 word (or within an already-joined compound). Following traditional grammar
 (Kaccāyana: «vagge vaggantaṃ»):
 
@@ -89,7 +89,7 @@ def assimilate_word(word: str) -> str:
 #:
 #: Only these three. The long-vowel variants (āya, āva, āyi) earn nothing on
 #: their own, the i-series (iya, īya) loses ground outright, and `avi` and
-#: `ayu` lose too — measured, not assumed. See SPEC §9.1.
+#: `ayu` lose too — measured, not assumed. See SPEC §6.3.
 CONTRACTIONS = (("aya", "e"), ("ava", "o"), ("ayi", "e"))
 
 
@@ -137,7 +137,7 @@ def _vowel_by_places(places: frozenset, long: bool) -> Optional[str]:
 def sandhi_join(left: str, right: str) -> str:
     """Join two words, resolving vowel sandhi at the boundary.
 
-    The mechanism is the JOIN of the place lattice (SPEC §6): the resulting
+    The mechanism is the JOIN of the place lattice (SPEC §3): the resulting
     vowel is the one occupying the union of both vowels' places.
 
     - a/ā + i/ī → e   ({G} ∪ {P} = {G,P} = e):   upa+ikkhā → upekkhā

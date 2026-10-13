@@ -40,7 +40,7 @@ WHAT IS NOT IN C, AND WHY
 - **`neighbors`, `sandhi_join`, `index`**: glue, not metric.
 
 The theory — the algebra, the embedding, the derivation of every constant —
-is in SPEC.md §14 and repeated in the docstrings of `abugida._pure`, which
+is in SPEC.md §9 and repeated in the docstrings of `abugida._pure`, which
 is the reference the C core is verified against.
 """
 
@@ -220,7 +220,7 @@ def neighbors(word: str, candidates, k: int = 5, lenient: bool = False
 # --- EXPERIMENTAL: the componentwise weighted distance --------------------
 # Not used by anything: `distance` and `cost` above are untouched. Kept
 # runnable because "why an angle instead of a weighted sum of components?" is
-# a reasonable question about §14, and the answer is measured, not asserted.
+# a reasonable question about SPEC §9, and the answer is measured, not asserted.
 # See SPEC §4, and `abugida._pure` for the derivation and the measurements.
 
 weighted_cost = _pure.weighted_cost

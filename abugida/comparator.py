@@ -54,7 +54,7 @@ limits:
   0.831 and lands at ratio 0.166 — just outside `"balanced"` (0.16), inside
   `"exhaustive"`. `sarva ~ sabba` is 1.276 and outside all three. Sanskrit→
   Pāli reflexes are SYSTEMATIC sound change (`tr`→`tth`, `rv`→`bb`:
-  correlated edits), and edit distance assumes independent ones. SPEC §14 is
+  correlated edits), and edit distance assumes independent ones. SPEC §9.7 is
   explicit that closing this needs a transducer of the sound laws — another
   machine, buildable on the phonotactics — not a finer metric. Until then:
   use `"exhaustive"` if these matter to you.

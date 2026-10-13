@@ -1,6 +1,6 @@
 """The Pāli alphabet (akkharā): derived from structure, not listed.
 
-See SPEC.md §11. The 41 sounds in traditional recitation order:
+See SPEC.md §7. The 41 sounds in traditional recitation order:
 
     a ā i ī u ū e o | k kh g gh ṅ | c ch j jh ñ | ṭ ṭh ḍ ḍh ṇ |
     t th d dh n | p ph b bh m | y r l v s h ḷ | ṃ

@@ -10,7 +10,7 @@ is for. The public behaviour is identical either way: `tests/test_c_parity.py`
 compares the two tokenisers over the whole alphabet and over a sample that
 includes every digraph and every opaque character.
 
-See SPEC.md §7. The native scripts of Pāli are abugidas (the unit is the
+See SPEC.md §5. The native scripts of Pāli are abugidas (the unit is the
 akṣara: a consonant with an inherent `a`); IAST is the phonemic pivot that
 dissolves that complication — a flat representation, one grapheme to one
 phoneme, with no inherent vowel.

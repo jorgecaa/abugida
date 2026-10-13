@@ -344,7 +344,7 @@ extern const unsigned char abugida_ts_two_span[{two_size}];
  * tokenisation still refuses them. They are here because lenient comparison
  * prices them with real phonology rather than as opaque cost-1 characters —
  * ṣ↔s is 0.460, ś↔s 0.667 — which is what makes cross-system Sanskrit↔Pāli
- * work possible at all (SPEC §14). */
+ * work possible at all (SPEC §9.6). */
 #define ABUGIDA_NFOREIGN {n_foreign}
 extern const unsigned short abugida_ts_foreign_cp[{n_foreign}];
 extern const abugida_token_t abugida_ts_foreign_id[{n_foreign}];
@@ -482,7 +482,7 @@ def build() -> "Tables":
     # The Sanskrit phonemes are NOT graphemes of the inventory — the
     # tokeniser refuses them in strict mode and `phonotactics` keeps
     # rejecting them — but lenient comparison prices them with real
-    # phonology instead of as opaque cost-1 characters (SPEC §14), so the
+    # phonology instead of as opaque cost-1 characters (SPEC §9.6), so the
     # scanner has to recognise them and the cost table has to include them.
     # They are reachable only through lenient tokenisation.
     foreign = [(ord(g), index[g]) for g in sorted(FOREIGN)]

@@ -159,7 +159,7 @@ def cost_a(g1, g2):
 
 
 def _derived_indel():
-    """The extremal epenthetic weight for THIS layout (SPEC §14)."""
+    """The extremal epenthetic weight for THIS layout (SPEC §9.3)."""
     letters = [p.grapheme for p in INVENTORY] + sorted(FOREIGN)
     inside = [g for g in letters if g in EPENTHETIC]
     outside = [g for g in letters if g not in EPENTHETIC]

@@ -108,7 +108,7 @@ What it does not, documented and left unchanged:
       other sonorant+h clusters stay word-internal (pinned by
       `tests/test_phonotactics.py`). No generated output moves (`pseudoword`
       opens with one consonant; no root in `ROOTS` starts with nh/mh). The
-      SPEC §13 calibration had no script; `phonotactics_calibration.py
+      SPEC §8 calibration had no script; `phonotactics_calibration.py
       --dpd` reproduces it: 98.99% of 74,800 lemmas, the 0.06-point rise
       over 98.93% being the 47 nh/mh lemmas.
 - [x] **The phonotactics rejected word-internal st** (fixed 2026-10-13).
@@ -120,10 +120,10 @@ What it does not, documented and left unchanged:
       ly vy) already passed. Family f now takes s+t, word-internally only
       (`stana`, `stūpa` stay impossible). Consequence, accepted: `hasta` is
       now possible, and `pseudoword` draws from a wider cluster set, so
-      `open_vocabulary.py` moves by tenths (SPEC §14 table updated; the
+      `open_vocabulary.py` moves by tenths (SPEC §11 table updated; the
       `--morphological` variant and the morphological generator's 3,920
       words are identical). `phonotactics_calibration.py --dpd`: 26 more
-      lemmas accepted (99.03%), all Pāli; the 64 left are read in SPEC §13.
+      lemmas accepted (99.03%), all Pāli; the 64 left are read in SPEC §8.
 - **Quantity exchange (law of mora, §3.3) is priced as two edits** —
   `appeti ~ āpeti` 1.28×, `soppati ~ supati` 1.44×, `patta ~ pātī` 1.29×.
   This is correct and stays: the two forms differ in two phonetic segments;
@@ -358,7 +358,7 @@ Recorded 2026-08 while testing the C core. The word-level
 triangle fails across the 2:1/1:2 alignment transitions: 42 violating triples
 in 10,648 over 22 words, 0 with the transitions disabled; the empty string
 fails it separately. The full account is in `docs/c-core.md` and the
-amendment to SPEC §14.
+account in SPEC §9.4.
 
 What is already established, so nobody re-measures it:
 
@@ -582,7 +582,7 @@ measured the mechanism instead of the call.
   rather than by coincidence. Do not collapse it back to an alias.
 
 - **The dorsal karaṇa bridge: adopted** (2026-08-02, `eval/karana_bridges.py`).
-  SPEC §14 used to claim the tongue tip was the only place confusion
+  SPEC §9 used to claim the tongue tip was the only place confusion
   transmission attests; it is not. Guttural~palatal occurs 95 times (11.4%)
   in `var_phonetic`, second after cerebral~dental's 72.7%, and the tradition
   already supplies the principle — guttural is jivhāmūla and palatal
@@ -601,7 +601,7 @@ measured the mechanism instead of the call.
   `CONFUSION_PAIRS` is corrected to include the tongue-body pairs it models
   — they were missing while the tongue-tip ones were present — it is −0.5
   and NOT significant (p=0.2266). Against +2.8 to +3.9 of variant recall at
-  strict θ, plus a false claim removed from SPEC §14. Do not re-measure;
+  strict θ, plus a false claim removed from SPEC §9. Do not re-measure;
   do not quote the −1.9.
 - **Removing the geminate transitions: rejected** (`eval/ablate_geminates.py`).
   They are the only special case stitched into the DP and so the standing
@@ -627,10 +627,10 @@ measured the mechanism instead of the call.
   with the distance rather than orthogonal to it.
 - **Contraction as a 3:1 alignment transition inside `distance`: rejected.**
   Breaks the triangle inequality; counterexample and reasoning in SPEC
-  §9.1. It lives in `sandhi.contract_word` as a normalisation instead.
+  §6.3. It lives in `sandhi.contract_word` as a normalisation instead.
 - **The four contraction rules that do not pay for themselves**: `āya→e`
   and `āva→o` earn nothing alone; `iya→e` and `īya→e` lose recall
-  (−2.80, −2.44 points). Per-rule table in SPEC §9.1.
+  (−2.80, −2.44 points). Per-rule table in SPEC §6.3.
 - **Morphological formability as a candidate filter: rejected.** 43 roots
   span 3,920 forms covering 0.13% of the lexicon — three orders of
   magnitude short. It remains useful as an evaluation control

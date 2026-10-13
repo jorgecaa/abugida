@@ -1,6 +1,6 @@
 """Executable phonotactics: which strings of Σ* could be Pāli.
 
-See SPEC.md §13. Defines P = {phonotactically possible strings}, with
+See SPEC.md §8. Defines P = {phonotactically possible strings}, with
 L ⊂ P ⊂ Σ*. `tokenize` validates graphemes; this validates SEQUENCES — it is
 the layer that knows dharma is not Pāli even though all its graphemes are.
 

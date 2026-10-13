@@ -204,7 +204,7 @@ def test_alignment_of_identical_words_is_all_keeps():
 
 
 def test_the_cap_only_flattens_unrelated_pairs():
-    """Measured basis for keeping the truncation (SPEC §14): every letter
+    """Measured basis for keeping the truncation (SPEC §9.2): every letter
     pair whose raw angular distance exceeds 1.0 (before the cap) shares NO
     place of articulation — beyond-orthogonal values are an artifact of the
     120° modifier representation, not phonological signal. Raw values reach

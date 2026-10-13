@@ -1,7 +1,7 @@
 """Evaluation: phonological distance vs Levenshtein over real Pāli.
 
 Three ground-truth experiments over the DPD lexicon. Run with the database
-available (/dev/shm/dpd.db). Results are recorded in SPEC.md §14.
+available (/dev/shm/dpd.db). Results are recorded in SPEC.md §11.
 
 Scoring per query: the lexicon is ranked by the measure; if the true target
 comes strictly first, credit 1; if it ties with k candidates at the best

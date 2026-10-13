@@ -420,7 +420,7 @@ abugida_status abugida_assimilate_word(abugida_string *out, const char *text,
 
 /* Vowel contraction (`sandhi.contract_word`): aya → e, ava → o, ayi → e.
  * A NORMALISATION, deliberately not an edit operation — as an alignment
- * transition it breaks the triangle inequality (SPEC §9.1). */
+ * transition it breaks the triangle inequality (SPEC §6.3). */
 abugida_status abugida_contract_word(abugida_string *out, const char *text,
                                      size_t len);
 

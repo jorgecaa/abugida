@@ -60,7 +60,7 @@ Generic measures return a count; this returns a measurement.
 ## Against the generic baseline
 
 Measured against ground truth (full detail and reproduction in `eval/`
-and `SPEC.md §14`):
+and `SPEC.md §11`):
 
 | task | phonological | Levenshtein |
 |---|---|---|
@@ -120,7 +120,7 @@ difficulty is defined without the metric). The comparison holds only
 while `var_phonetic` is computed independently of this library.
 
 **Most agreement figures in this repository predate the heavy units**
-(2026-10-13, SPEC §14), which changed every distance involving a geminate or
+(2026-10-13, SPEC §9.4), which changed every distance involving a geminate or
 a nasal+stop cluster, and were measured on the August build (5,002 pairs).
 The paired measure of the change is on one newer build (5,143 pairs): at
 θ = `ONE_MOVE`, 63.2% before the units and **62.6%** after, at the same
@@ -285,7 +285,7 @@ substitution cost is a metric over all 126 tokens (letters, heavy units,
 Sanskrit phonemes: 2,000,376 triples), and the indels satisfy the triangle
 against it over every pair — and on one structural fact: each word is
 segmented ONCE, before measuring, with geminates and homorganic nasal+stop
-clusters as single heavy units (SPEC §14). Edit distance over one sequence
+clusters as single heavy units (SPEC §9.4). Edit distance over one sequence
 per word is then a metric by the classical argument.
 
 It was not always so. Until 2026-10-13 alignment transitions let each
@@ -344,7 +344,7 @@ Known limitations, in the open:
     contraction: `contract_word` (`aya`~`e`, `ava`~`o`). Both are
   normalisations rather than edit operations, and deliberately so —
   contraction as an alignment transition breaks the triangle inequality
-  (SPEC §9.1). **Measured together, phonology first and metric second lifts
+  (SPEC §6.3). **Measured together, phonology first and metric second lifts
   agreement with DPD from 62.0% to 77.5%** — +6 to +13 points even after
   matching candidate volume — and `Lexicon(words, normalise=True)` turns the
   whole pipeline on in one flag (`docs/comparator.md`).
