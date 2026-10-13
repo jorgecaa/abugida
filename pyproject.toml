@@ -4,10 +4,10 @@ version = "0.1.0"
 description = "Phonological metric for Pali words (IAST): a calibrated distance with an algebraic foundation"
 requires-python = ">=3.9"
 dependencies = []
-license = {file = "LICENSE"}
+license = "CC0-1.0"
+license-files = ["LICENSE", "NOTICE"]
 readme = "README.md"
 classifiers = [
-    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "Programming Language :: Python :: 3",
     "Programming Language :: C",
     "Topic :: Text Processing :: Linguistic",
@@ -24,7 +24,7 @@ speed = ["rapidfuzz"]
 # the extension, so an installed abugida needs neither Cython nor a shared
 # library at run time. Without a compiler, `abugida.distance` falls back to
 # the pure-Python reference and behaves identically.
-requires = ["setuptools>=61", "Cython>=3.0"]
+requires = ["setuptools>=77", "Cython>=3.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
